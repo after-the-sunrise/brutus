@@ -25,8 +25,8 @@ public class BrutusTest {
 
         String[] args = { //
                 "-in", "src/test/resources/test.txt", //
-                "-min", "2", //
-                "-max", "3" //
+                "-min", "1", //
+                "-max", "2" // Password is "A9%"
         };
 
         Brutus.main(args);
@@ -39,12 +39,12 @@ public class BrutusTest {
         String[] args = { //
                 "-in", "src/test/resources/hoge.zip", //
                 "-lower", "true", //
-                "-upper", "false", //
+                "-upper", "true", //
                 "-number", "false", //
                 "-symbol", "false", //
                 "-control", "false", //
-                "-min", "3", //
-                "-max", "3" // Password is "foo"
+                "-min", "2", //
+                "-max", "2" // Password is "aZ"
         };
 
         Brutus.main(args);
@@ -56,13 +56,13 @@ public class BrutusTest {
 
         String[] args = { //
                 "-in", "src/test/resources/hoge.zip", //
-                "-lower", "false", //
+                "-lower", "true", //
                 "-upper", "false", //
-                "-number", "true", //
+                "-number", "false", //
                 "-symbol", "false", //
                 "-control", "false", //
-                "-min", "1", //
-                "-max", "1" // Password is "foo"
+                "-min", "2", //
+                "-max", "2" // Password is "aZ"
         };
 
         Brutus.main(args);

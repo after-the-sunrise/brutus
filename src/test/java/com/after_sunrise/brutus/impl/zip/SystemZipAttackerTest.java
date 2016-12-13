@@ -41,9 +41,9 @@ public class SystemZipAttackerTest {
 
         Attacker target = new SystemZipAttacker("src/test/resources/hoge.zip");
 
-        assertTrue(target.test("foo".toCharArray()));
+        assertTrue(target.test("aZ".toCharArray()));
 
-        assertFalse(target.test("bar".toCharArray()));
+        assertFalse(target.test("00".toCharArray()));
 
     }
 

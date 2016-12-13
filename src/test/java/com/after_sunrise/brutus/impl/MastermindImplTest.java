@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author takanori.takase
@@ -154,11 +153,6 @@ public class MastermindImplTest {
 
     @Test(timeout = 5000L)
     public void testCreateTask_NotFound() throws Exception {
-
-        AtomicLong count = new AtomicLong();
-
-        Mockito.doAnswer(i -> count.incrementAndGet() <= MastermindImpl.INTERVAL ? //
-                "a".toCharArray() : null).when(blacksmith).get();
 
         CompletableFuture<String> future = new CompletableFuture<>();
 

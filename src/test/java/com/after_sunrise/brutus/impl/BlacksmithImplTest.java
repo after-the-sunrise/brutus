@@ -219,7 +219,7 @@ public class BlacksmithImplTest {
     }
 
     @Test(timeout = 5000L)
-    public void testCount() {
+    public void testCalculateTotal() {
 
         Function<Blacksmith, Long> f = (b) -> {
 
@@ -244,33 +244,55 @@ public class BlacksmithImplTest {
         when(context.getMinLength()).thenReturn(0);
         when(context.getMaxLength()).thenReturn(0);
         BlacksmithImpl target_0 = new BlacksmithImpl(context);
-        Assert.assertEquals((Long) 1L, target_0.countTotal());
+        Assert.assertEquals((Long) 1L, (Long) target_0.calculateTotal());
         Assert.assertEquals((Long) 1L, f.apply(target_0));
-        Assert.assertEquals((Long) 1L, target_0.countTotal());
+        Assert.assertEquals((Long) 1L, (Long) target_0.calculateTotal());
 
         // 1 letter
         when(context.getMinLength()).thenReturn(1);
         when(context.getMaxLength()).thenReturn(1);
         BlacksmithImpl target_1 = new BlacksmithImpl(context);
-        Assert.assertEquals((Long) 10L, target_1.countTotal());
+        Assert.assertEquals((Long) 10L, (Long) target_1.calculateTotal());
         Assert.assertEquals((Long) 10L, f.apply(target_1));
-        Assert.assertEquals((Long) 10L, target_1.countTotal());
+        Assert.assertEquals((Long) 10L, (Long) target_1.calculateTotal());
 
         // 1 + 2 letter
         when(context.getMinLength()).thenReturn(1);
         when(context.getMaxLength()).thenReturn(2);
         BlacksmithImpl target_2 = new BlacksmithImpl(context);
-        Assert.assertEquals((Long) ((10L) + (10L * 10L)), target_2.countTotal());
+        Assert.assertEquals((Long) ((10L) + (10L * 10L)), (Long) target_2.calculateTotal());
         Assert.assertEquals((Long) ((10L) + (10L * 10L)), f.apply(target_2));
-        Assert.assertEquals((Long) ((10L) + (10L * 10L)), target_2.countTotal());
+        Assert.assertEquals((Long) ((10L) + (10L * 10L)), (Long) target_2.calculateTotal());
 
         // 0 + 1 + 2 letter
         when(context.getMinLength()).thenReturn(0);
         when(context.getMaxLength()).thenReturn(2);
         BlacksmithImpl target_3 = new BlacksmithImpl(context);
-        Assert.assertEquals((Long) ((1L) + (10L) + (10L * 10L)), target_3.countTotal());
+        Assert.assertEquals((Long) ((1L) + (10L) + (10L * 10L)), (Long) target_3.calculateTotal());
         Assert.assertEquals((Long) ((1L) + (10L) + (10L * 10L)), f.apply(target_3));
-        Assert.assertEquals((Long) ((1L) + (10L) + (10L * 10L)), target_3.countTotal());
+        Assert.assertEquals((Long) ((1L) + (10L) + (10L * 10L)), (Long) target_3.calculateTotal());
+
+    }
+
+    @Test(timeout = 5000L)
+    public void testCalculateInterval() {
+
+        BlacksmithContext context = Mockito.mock(BlacksmithContext.class);
+
+        BlacksmithImpl target = new BlacksmithImpl(context);
+
+        Assert.assertEquals(1L, target.calculateInterval(1L));
+        Assert.assertEquals(1L, target.calculateInterval(10L));
+        Assert.assertEquals(10L, target.calculateInterval(100L));
+        Assert.assertEquals(100L, target.calculateInterval(1_000L));
+        Assert.assertEquals(1_000L, target.calculateInterval(10_000L));
+        Assert.assertEquals(10_000L, target.calculateInterval(100_000L));
+        Assert.assertEquals(100_000L, target.calculateInterval(1_000_000L));
+        Assert.assertEquals(1_000_000L, target.calculateInterval(10_000_000L));
+        Assert.assertEquals(10_000_000L, target.calculateInterval(100_000_000L));
+        Assert.assertEquals(100_000_000L, target.calculateInterval(1_000_000_000L));
+        Assert.assertEquals(100_000_000L, target.calculateInterval(10_000_000_000L));
+        Assert.assertEquals(100_000_000L, target.calculateInterval(100_000_000_000L));
 
     }
 

@@ -72,17 +72,4 @@ public interface Blacksmith extends Supplier<char[]> {
     @Override
     char[] get();
 
-    /**
-     * <p>
-     * Number total of passwords. This is the total number of passwords which is
-     * NOT affected by whether the {@link Blacksmith#get()} is already invoked or not.
-     * </p>
-     * <p>
-     * In case the total number cannot be provided, a negative number will be given.
-     * </p>
-     *
-     * @return Total number of passwords, or {@code null} if the total is unknown.
-     */
-    Long countTotal();
-
 }

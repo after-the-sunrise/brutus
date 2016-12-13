@@ -9,11 +9,9 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * <p>
@@ -30,13 +28,9 @@ public class MastermindImpl implements Mastermind, ThreadFactory {
 
     static final int MULTIPLIER = 2;
 
-    static final long INTERVAL = 1000L;
-
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final AtomicInteger threadCount = new AtomicInteger();
-
-    private final AtomicLong attemptCount = new AtomicLong();
 
     private final MastermindContext context;
 
@@ -122,12 +116,6 @@ public class MastermindImpl implements Mastermind, ThreadFactory {
 
                     if (attempt == null) {
                         break;
-                    }
-
-                    long count = attemptCount.incrementAndGet();
-
-                    if (count % INTERVAL == 0) {
-                        log.debug("Attempting ({}) : '{}'", count, Arrays.toString(attempt));
                     }
 
                     boolean success = attacker.test(attempt);

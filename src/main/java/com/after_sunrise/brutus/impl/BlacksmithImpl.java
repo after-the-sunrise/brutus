@@ -246,35 +246,36 @@ public class BlacksmithImpl implements Blacksmith {
     @Override
     public char[] get() {
 
+        char[] next;
+
         try {
 
             lock.lock();
 
-            char[] next = next();
-
-            if (next != null) {
-
-                long i = count.incrementAndGet();
-
-                if (i == total || i % interval == 0) {
-
-                    log.info("Supplied {} / {} ({}%) passwords : {}", //
-                            String.format(FORMAT, i), //
-                            String.format(FORMAT, total), //
-                            String.format(FORMAT, (i * 100) / total), //
-                            Arrays.toString(next));
-
-                }
-
-            }
-
-            return next;
+            next = next();
 
         } finally {
             lock.unlock();
         }
 
-    }
+        if (next != null) {
 
+            long i = count.incrementAndGet();
+
+            if (i == total || i % interval == 0) {
+
+                log.info("Supplied {} / {} ({}%) passwords : {}", //
+                        String.format(FORMAT, i), //
+                        String.format(FORMAT, total), //
+                        String.format(FORMAT, (i * 100) / total), //
+                        Arrays.toString(next));
+
+            }
+
+        }
+
+        return next;
+
+    }
 
 }

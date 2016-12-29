@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <p>
@@ -28,17 +28,21 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author takanori.takase
  */
-public class BlacksmithImpl implements Blacksmith {
+public class BlacksmithImpl implements Blacksmith, Runnable {
 
     private static final String FORMAT = "%,3d";
 
     private static final long INTERVAL = 100_000_000;
 
+    private static final int BUFFER = 100;
+
+    private static final char[] END = new char[0];
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final ReentrantLock lock = new ReentrantLock();
-
     private final AtomicLong count = new AtomicLong();
+
+    private final BlockingQueue<char[]> queue = new LinkedBlockingQueue<>(BUFFER);
 
     private final char[] chars;
 
@@ -50,7 +54,7 @@ public class BlacksmithImpl implements Blacksmith {
 
     private final long interval;
 
-    private final AtomicReference<int[]> current;
+    private int[] current;
 
     @Inject
     public BlacksmithImpl(BlacksmithContext context) {
@@ -65,9 +69,13 @@ public class BlacksmithImpl implements Blacksmith {
 
         interval = calculateInterval(total);
 
-        current = new AtomicReference<>();
+        Thread thread = new Thread(this);
+        thread.setDaemon(true);
+        thread.setName(getClass().getSimpleName());
+        thread.setPriority(Thread.MAX_PRIORITY);
+        thread.start();
 
-        log.info("Initialized with {} candidates. (chars=[], min={}, max={})", //
+        log.info("Initialized with {} candidates. (chars={}, min={}, max={})", //
                 String.format(FORMAT, total), chars.length, min, max);
 
     }
@@ -185,55 +193,49 @@ public class BlacksmithImpl implements Blacksmith {
 
     private char[] next() {
 
-        int[] data = current.get();
+        if (current == null) {
 
-        if (data == null) {
-
-            data = new int[min];
-
-            current.set(data);
+            current = new int[min];
 
         } else {
 
-            if (data.length > max) {
+            if (current.length > max) {
                 return null;
             }
 
-            for (int i = 0; i <= data.length; i++) {
+            for (int i = 0; i <= current.length; i++) {
 
-                if (i == data.length) {
+                if (i == current.length) {
 
-                    data = new int[data.length + 1];
-
-                    current.set(data);
+                    current = new int[current.length + 1];
 
                     break;
 
                 }
 
-                if (data[i] < chars.length - 1) {
+                if (current[i] < chars.length - 1) {
 
-                    data[i] = data[i] + 1;
+                    current[i] = current[i] + 1;
 
                     break;
 
                 }
 
-                data[i] = 0;
+                current[i] = 0;
 
             }
 
-            if (data.length > max) {
+            if (current.length > max) {
                 return null;
             }
 
         }
 
-        char[] result = new char[data.length];
+        char[] result = new char[current.length];
 
         for (int i = 0; i < result.length; i++) {
 
-            char c = chars[data[i]];
+            char c = chars[current[i]];
 
             result[i] = c;
 
@@ -244,37 +246,66 @@ public class BlacksmithImpl implements Blacksmith {
     }
 
     @Override
-    public char[] get() {
-
-        char[] next;
+    public void run() {
 
         try {
 
-            lock.lock();
+            char[] c;
 
-            next = next();
+            while ((c = next()) != null) {
 
-        } finally {
-            lock.unlock();
-        }
-
-        if (next != null) {
-
-            long i = count.incrementAndGet();
-
-            if (i == total || i % interval == 0) {
-
-                log.info("Supplied {} / {} ({}%) passwords : {}", //
-                        String.format(FORMAT, i), //
-                        String.format(FORMAT, total), //
-                        String.format(FORMAT, (i * 100) / total), //
-                        Arrays.toString(next));
+                queue.put(c);
 
             }
 
+            queue.put(END);
+
+        } catch (InterruptedException e) {
+
+            log.trace("Could not append an element.", e);
+
         }
 
-        return next;
+    }
+
+    @Override
+    public char[] get() {
+
+        char[] c;
+
+        while (true) {
+
+            c = queue.poll();
+
+            if (c != null) {
+                break;
+            }
+
+            Thread.yield();
+
+        }
+
+        if (c == END) {
+
+            queue.add(END);
+
+            return null;
+
+        }
+
+        long i = count.incrementAndGet();
+
+        if (i == total || i % interval == 0) {
+
+            log.info("Supplied {} / {} ({}%) passwords : {}", //
+                    String.format(FORMAT, i), //
+                    String.format(FORMAT, total), //
+                    String.format(FORMAT, (i * 100) / total), //
+                    Arrays.toString(c));
+
+        }
+
+        return c;
 
     }
 

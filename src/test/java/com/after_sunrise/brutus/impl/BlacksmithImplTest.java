@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 import static org.mockito.Mockito.when;
@@ -198,7 +199,7 @@ public class BlacksmithImplTest {
 
             executor.execute(() -> {
 
-                char[] chars = null;
+                char[] chars;
 
                 while ((chars = target.get()) != null) {
 
@@ -215,6 +216,48 @@ public class BlacksmithImplTest {
         executor.awaitTermination(1L, TimeUnit.MINUTES);
 
         Assert.assertEquals((52) + (52 * 52), results.size());
+
+    }
+
+    /**
+     * Measure the performance to fetch all values.
+     */
+    @Test
+    public void testGet_Benchmark() throws InterruptedException {
+
+        BlacksmithContext context = Mockito.mock(BlacksmithContext.class);
+        when(context.getMinLength()).thenReturn(0);
+        when(context.getMaxLength()).thenReturn(2);
+        when(context.isIncludeLower()).thenReturn(true);
+        when(context.isIncludeUpper()).thenReturn(true);
+        when(context.isIncludeNumber()).thenReturn(true);
+        when(context.isIncludeSymbol()).thenReturn(true);
+        when(context.isIncludeControl()).thenReturn(false);
+        BlacksmithImpl target = new BlacksmithImpl(context);
+
+        final AtomicLong count = new AtomicLong();
+
+        ExecutorService executor = Executors.newCachedThreadPool();
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+            executor.execute(() -> {
+                while (target.get() != null) {
+                    count.incrementAndGet();
+                }
+            });
+        }
+
+        executor.shutdown();
+
+        executor.awaitTermination(365L, TimeUnit.DAYS);
+
+        long end = System.nanoTime();
+
+        long elapsed = (end - start) / 1_000_000;
+
+        System.out.println(String.format("Count = %,3d, Time = %,3d", count.get(), elapsed));
 
     }
 

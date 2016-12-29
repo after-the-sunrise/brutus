@@ -16,7 +16,7 @@ import java.nio.file.Paths;
  */
 public class Zip4jAttacker implements Attacker {
 
-    private static final String TEMPDIR = "java.io.tmpdir";
+    private static final String TMPDIR = "java.io.tmpdir";
 
     private final ZipFile input;
 
@@ -50,7 +50,7 @@ public class Zip4jAttacker implements Attacker {
 
         String name = Paths.get(path).getFileName().toString();
 
-        String temp = System.getProperty(TEMPDIR);
+        String temp = System.getProperty(TMPDIR);
 
         Path output = Paths.get(temp, getClass().getSimpleName(), name);
 

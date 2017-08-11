@@ -63,6 +63,8 @@
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
         <plugin.exec.version>1.5.0</plugin.exec.version>
+        <plugin.coberture.version>2.6</plugin.coberture.version>
+        <plugin.coveralls.version>4.3.0</plugin.coveralls.version>
         <dependency.junit.version>4.12</dependency.junit.version>
         <dependency.mockito.version>1.10.19</dependency.mockito.version>
         <dependency.slf4j.version>1.7.21</dependency.slf4j.version>
@@ -80,6 +82,21 @@
                 <configuration>
                     <mainClass>com.after_sunrise.brutus.Brutus</mainClass>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${plugin.coberture.version}</version>
+                <configuration>
+                    <formats>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>${plugin.coveralls.version}</version>
             </plugin>
         </plugins>
     </build>

@@ -65,7 +65,7 @@
         <plugin.exec.version>1.5.0</plugin.exec.version>
         <plugin.coberture.version>2.7</plugin.coberture.version>
         <plugin.coveralls.version>4.3.0</plugin.coveralls.version>
-        <dependency.junit.version>4.12</dependency.junit.version>
+        <dependency.junit.version>4.13.1</dependency.junit.version>
         <dependency.mockito.version>1.10.19</dependency.mockito.version>
         <dependency.slf4j.version>1.7.21</dependency.slf4j.version>
         <dependency.guice.version>4.1.0</dependency.guice.version>

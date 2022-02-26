@@ -70,7 +70,7 @@
         <dependency.slf4j.version>1.7.21</dependency.slf4j.version>
         <dependency.guice.version>4.1.0</dependency.guice.version>
         <dependency.jcommander.version>1.58</dependency.jcommander.version>
-        <dependency.zip4j.version>1.3.2</dependency.zip4j.version>
+        <dependency.zip4j.version>2.9.1</dependency.zip4j.version>
     </properties>
 
     <build>

@@ -17,6 +17,7 @@ keep in mind that this tool is limited to be functional with simple passwords.
 
 Brutus currently supports the following file formats:
   * `*.zip`
+  * `*.pdf`
   * `*.txt`
 
 Note that `*.txt` is to be used for testing purpose, which tries to match the clear-text value 

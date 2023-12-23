@@ -2,6 +2,7 @@ package com.after_sunrise.brutus.impl;
 
 import com.after_sunrise.brutus.Attacker;
 import com.after_sunrise.brutus.Barrack;
+import com.after_sunrise.brutus.impl.pdf.PdfBarrack;
 import com.after_sunrise.brutus.impl.txt.TextBarrack;
 import com.after_sunrise.brutus.impl.zip.ZipBarrack;
 import com.google.common.annotations.VisibleForTesting;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Delegate method invocation to other {@link Barrack} by the path suffix.
@@ -26,18 +26,16 @@ public class BarrackImpl implements Barrack {
 
     private final Map<String, Barrack> delegates;
 
-    private final BarrackContext context;
-
     @Inject
     public BarrackImpl(BarrackContext context) {
-
-        this.context = Objects.requireNonNull(context);
 
         this.delegates = new HashMap<>();
 
         this.delegates.put("txt", new TextBarrack());
 
         this.delegates.put("zip", new ZipBarrack(context));
+
+        this.delegates.put("pdf", new PdfBarrack(context));
 
     }
 

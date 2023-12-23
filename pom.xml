@@ -71,6 +71,7 @@
         <dependency.guice.version>4.1.0</dependency.guice.version>
         <dependency.jcommander.version>1.58</dependency.jcommander.version>
         <dependency.zip4j.version>2.11.5</dependency.zip4j.version>
+        <dependency.pdfbox.version>3.0.1</dependency.pdfbox.version>
     </properties>
 
     <build>
@@ -146,6 +147,11 @@
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>
             <version>${dependency.zip4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>${dependency.pdfbox.version}</version>
         </dependency>
     </dependencies>
 

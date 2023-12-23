@@ -2,7 +2,7 @@ package com.after_sunrise.brutus.impl.zip;
 
 import com.after_sunrise.brutus.Attacker;
 import com.google.common.annotations.VisibleForTesting;
-import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 import java.io.IOException;
